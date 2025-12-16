@@ -4,22 +4,17 @@ build-backend = "hatchling.build"
 
 [project]
 name = "tomly"
-version = "0.0.1"
+version = "0.1.0"
 description = "A wrapper around rtoml providing tomli-compatible behavior with enhanced convenience methods for intuitive value access."
 authors = [{ name = "kris.wang", email = "wenhom.wang@gmail.com" }]
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.10"
-dependencies = [
-    "rtoml>=0.13.0",
-]
+dependencies = ["rtoml>=0.13.0"]
 
 # uv sync --extra dev
 [project.optional-dependencies]
-dev = [
-    "rich>=14.2.0",
-    "pytest>=9.0.2",
-]
+dev = ["rich>=14.2.0", "pytest>=9.0.2"]
 
 
 [tool.uv]

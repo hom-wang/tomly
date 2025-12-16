@@ -1,5 +1,5 @@
 
-@default: venv update-version build
+@default: venv update-version build test
 
 @venv:
     uv sync --extra dev
@@ -12,6 +12,9 @@
 
 @build: clear
     uv build --no-sources
+
+@test:
+    uv run tests/test_toml.py
 
 @publish: default
     uv publish --token "$(pass show pypi/token)"

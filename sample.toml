@@ -1,0 +1,78 @@
+# TOML Core Feature Test File
+
+# ============================================
+# Top-level table (root)
+# ============================================
+
+# Basic Types
+title = "TOML Test"
+integer = 42
+float = 3.14
+boolean = true
+date = 1979-05-27T07:32:00Z
+
+# Strings
+basic_string = "Hello World"
+literal_string = 'C:\Users\path'
+multiline = """
+Line 1
+Line 2"""
+
+# Arrays
+array = [1, 2, 3]
+nested_array = [[1, 2], [3, 4]]
+string_array = ["a", "b", "c"]
+
+# Inline Tables (at top level)
+inline = { x = 1, y = 2 }
+point = { lat = 25.0, lon = 121.5 }
+
+# ============================================
+# Tables
+# ============================================
+
+[section]
+key = "value"
+number = 100
+
+# Nested Tables
+[section.nested]
+nested_key = "nested_value"
+nested_number = 999
+inline_in_section = { a = "alpha", b = "beta" }
+
+
+# ============================================
+# Array of Tables
+# ============================================
+
+[[items]]
+name = "item1"
+value = 10
+
+[[items]]
+name = "item2"
+value = 20
+
+# ============================================
+# Edge Cases
+# ============================================
+
+[edge_cases]
+empty_string = ""
+negative = -99
+hex = 0xFF
+infinity = inf
+none = 'null'
+unicode = "中文 🚀"
+"key with spaces" = "value"
+
+# ============================================
+# Real-world Config Example
+# ============================================
+
+[config]
+host = "localhost"
+port = 8080
+debug = true
+tags = ["web", "api"]
