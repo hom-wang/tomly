@@ -1,0 +1,90 @@
+[build-system]
+requires = ["hatchling >= 1.26"]
+build-backend = "hatchling.build"
+
+[project]
+name = "tomly"
+version = "0.0.1"
+description = "A wrapper around rtoml providing tomli-compatible behavior with enhanced convenience methods for intuitive value access."
+authors = [{ name = "kris.wang", email = "wenhom.wang@gmail.com" }]
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
+dependencies = [
+    "rtoml>=0.13.0",
+]
+
+# uv sync --extra dev
+[project.optional-dependencies]
+dev = [
+    "rich>=14.2.0",
+    "pytest>=9.0.2",
+]
+
+
+[tool.uv]
+package = true
+
+
+[tool.ruff]
+
+# A list of rule codes or prefixes to ignore.
+ignore = [
+    "F403",   # Checks for the use of wildcard imports.
+    "F405",   # Checks for names that might be undefined, but may also be defined in a wildcard import.
+    "E501",   # Checks for lines that exceed the specified maximum character length.
+    "A003",   # Checks for any class attributes or methods that use the same name as a builtin.
+    "PTH123", # Checks for uses of the open builtin.
+    "NPY002", # Checks for the use of legacy np.random function calls.
+    "UP015",  # Checks for redundant open mode parameters.
+]
+
+# The number of spaces per indentation level (tab).
+indent-width = 4
+
+# The line length to use when enforcing long-lines violations (like) and at which and the formatter prefers to wrap lines.
+line-length = 125
+
+# A list of rule codes or prefixes to enable.
+select = [
+    "E",
+    "W",   # pycodestyle 
+    "F",   # Pyflakes
+    "C90", # mccabe
+    "I",   # isort
+    "UP",  # pyupgrade
+    "B",   # flake8-bugbear
+    "A",   # flake8-builtins
+    "C4",  # flake8-comprehensions
+    "SIM", # flake8-reimple
+    "PTH", # flake8-use-pathlib
+    "PD0", # pandas-vet
+    "NPY", # NumPy-specific rules
+]
+
+# The minimum Python version to target, e.g., when considering automatic code upgrades, like rewriting type annotations.
+# Ruff will not propose changes using features that are not available in the given version.
+# Type: py37 | py38 | py39 | py310 | py311 | py312
+target-version = "py310"
+
+[tool.ruff.format]
+
+# Whether to format code snippets in docstrings. Type: bool
+docstring-code-format = true
+
+# Whether to use spaces or tabs for indentation. Type: space | tab
+indent-style = "space"
+
+# The character Ruff uses at the end of a line. Type: auto | lf | cr-lf | native
+line-ending = "auto"
+
+# Configures the preferred quote character for strings. Type: double | single | preserve
+quote-style = "double"
+
+# Ruff uses existing trailing commas as an indication that short lines should be left separate. Type: bool
+skip-magic-trailing-comma = false
+
+[tool.ruff.lint.mccabe]
+
+# Flag errors (C901) whenever the complexity level exceeds 15.
+max-complexity = 15
