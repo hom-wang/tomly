@@ -10,12 +10,17 @@ import rtoml
 from ._version import __version__  # noqa: F401
 
 __all__ = [
+    "TomlParsingError",
+    "TomlSerializationError",
     "load",
     "loads",
     "dumps",
     "dump",
     "DataDict",
 ]
+
+TomlParsingError = rtoml.TomlParsingError
+TomlSerializationError = rtoml.TomlSerializationError
 
 
 class DataDict(dict):
@@ -35,9 +40,9 @@ class DataDict(dict):
     # Class-level cache and constants
     _BASE_DIR = None
     _ENV_PATTERN = re.compile(r"\$\{([A-Z0-9_]+)(?::([^}]*))?\}", re.IGNORECASE)
-    __slots__ = ("_frozen",)  # Allow _frozen attribute
+    # __slots__ = ("_frozen", "_coerce_mapping")  # Allow _frozen attribute
 
-    def __init__(self, *args, interpolate_env: bool = False, **kwargs) -> None:
+    def __init__(self, *args, interpolate_env: bool = False, coerce_mapping: bool = True, **kwargs) -> None:
         """
         Initialize and recursively wrap nested structures.
 
@@ -48,6 +53,7 @@ class DataDict(dict):
         super().__init__(*args, **kwargs)
 
         self._frozen: bool = False
+        self._coerce_mapping: bool = coerce_mapping
 
         # Wrap nested structures efficiently
         for key, value in self.items():
@@ -88,7 +94,11 @@ class DataDict(dict):
         Intercept all data insertion to ensure recursive wrapping.
         """
         self._check_frozen()
-        super().__setitem__(key, self._wrap(value))
+
+        if self._coerce_mapping:
+            value = self._wrap(value)
+
+        super().__setitem__(key, value)
 
     def __delitem__(self, key: Any) -> None:
         """
@@ -247,6 +257,13 @@ class DataDict(dict):
         if self._frozen:
             raise TypeError("Cannot modify a frozen DataDict")
 
+    def _freeze_value(self, value: Any) -> None:
+        if type(value) is DataDict:
+            value.freeze()
+        elif isinstance(value, list | tuple | set):
+            for item in value:
+                self._freeze_value(item)
+
     def clear(self) -> None:
         """
         Clear all items with frozen check.
@@ -270,17 +287,42 @@ class DataDict(dict):
 
     def update(self, *args, **kwargs) -> None:
         """
-        Update with frozen check.
+        Update with frozen check and proper value wrapping.
         """
         self._check_frozen()
-        super().update(*args, **kwargs)
+
+        if not self._coerce_mapping:
+            super().update(*args, **kwargs)
+            return
+
+        if len(args) > 1:
+            raise TypeError(f"update expected at most 1 argument, got {len(args)}")
+
+        if args:
+            other = args[0]
+            items = getattr(other, "items", None)
+            if callable(items):
+                for k, v in items():
+                    self[k] = v
+            else:
+                for k, v in other:
+                    self[k] = v
+
+        for k, v in kwargs.items():
+            self[k] = v
 
     def setdefault(self, key: Any, default: Any = None) -> Any:
         """
-        Set default with frozen check.
+        Set default with frozen check and proper value wrapping.
         """
         self._check_frozen()
-        return super().setdefault(key, default)
+
+        if not self._coerce_mapping:
+            return super().setdefault(key, default)
+
+        if key not in self:
+            self[key] = default  # goes through __setitem__ -> wrapping
+        return self[key]
 
     def get_nested(self, path: str | Iterable[str], default: Any = None, *, separator: str = ".") -> Any:
         """
@@ -358,6 +400,8 @@ class DataDict(dict):
             (bool):
                 True if the path existed and was successfully deleted, False otherwise.
         """
+        self._check_frozen()
+
         keys = self._split_path(path, separator)
         if not keys:
             return False
@@ -451,8 +495,7 @@ class DataDict(dict):
 
         self._frozen = True
         for v in self.values():
-            if type(v) is DataDict:
-                v.freeze()
+            self._freeze_value(v)
 
         return self
 
@@ -528,6 +571,8 @@ def dumps(obj: Any, *, pretty: bool = False, none_value: str | None = "null") ->
         (str):
             TOML-formatted string
     """
+    if type(obj) is DataDict:
+        obj = obj.to_dict()
     return rtoml.dumps(obj, pretty=pretty, none_value=none_value)
 
 
