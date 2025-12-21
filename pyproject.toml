@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "tomly"
-version = "0.1.1"
+version = "0.1.2"
 description = "A wrapper around rtoml providing tomli-compatible behavior with enhanced convenience methods for intuitive value access."
 authors = [{ name = "kris.wang", email = "wenhom.wang@gmail.com" }]
 readme = "README.md"
