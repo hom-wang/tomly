@@ -14,12 +14,17 @@ dependencies = ["rtoml>=0.13.0"]
 
 # uv sync --extra dev
 [project.optional-dependencies]
-dev = ["rich>=14.2.0", "pytest>=9.0.2"]
+dev = ["rich>=14.2.0", "pytest>=9.0.2", "pytest-cov>=7.0.0"]
 
 
 [tool.uv]
 package = true
 
+[tool.coverage.run]
+data_file = "artifacts/.coverage"
+omit = [
+    "tomly/_version.py",
+]
 
 [tool.ruff]
 

@@ -1,5 +1,7 @@
 __pycache__
 uv.lock
-dist
 
-.venv
+.venv/
+
+dist/
+artifacts/
