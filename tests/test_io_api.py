@@ -17,9 +17,7 @@ from tomly import DataDict
 
 
 def test_loads_basic():
-    """
-    Test basic TOML string parsing.
-    """
+    """Test basic TOML string parsing."""
     toml_str = """
         title = "Test"
         version = 1
@@ -30,9 +28,7 @@ def test_loads_basic():
 
 
 def test_loads_nested_tables():
-    """
-    Test parsing nested TOML tables.
-    """
+    """Test parsing nested TOML tables."""
     toml_str = """
         [server]
         host = "127.0.0.1"
@@ -48,9 +44,7 @@ def test_loads_nested_tables():
 
 
 def test_loads_arrays():
-    """
-    Test parsing TOML arrays.
-    """
+    """Test parsing TOML arrays."""
     toml_str = """
         numbers = [1, 2, 3]
         strings = ["a", "b", "c"]
@@ -61,9 +55,7 @@ def test_loads_arrays():
 
 
 def test_loads_array_of_tables():
-    """
-    Test parsing array of tables.
-    """
+    """Test parsing array of tables."""
     toml_str = """
         [[items]]
         name = "first"
@@ -80,9 +72,7 @@ def test_loads_array_of_tables():
 
 
 def test_loads_inline_tables():
-    """
-    Test parsing inline tables.
-    """
+    """Test parsing inline tables."""
     toml_str = """
         point = { x = 1, y = 2 }
     """
@@ -92,9 +82,7 @@ def test_loads_inline_tables():
 
 
 def test_loads_with_none_value():
-    """
-    Test loads with none_value parameter.
-    """
+    """Test loads with none_value parameter."""
     toml_str = """
         key = "null"
     """
@@ -103,9 +91,7 @@ def test_loads_with_none_value():
 
 
 def test_loads_multiline_strings():
-    """
-    Test parsing multiline strings.
-    """
+    """Test parsing multiline strings."""
     toml_str = '''
         text = """
         Line 1
@@ -118,18 +104,14 @@ def test_loads_multiline_strings():
 
 
 def test_loads_empty_string():
-    """
-    Test parsing empty TOML string.
-    """
+    """Test parsing empty TOML string."""
     toml_str = ""
     data = tomly.loads(toml_str)
     assert data == {}
 
 
 def test_loads_comments_ignored():
-    """
-    Test that comments are properly ignored.
-    """
+    """Test that comments are properly ignored."""
     toml_str = """
         # This is a comment
         key = "value"  # inline comment
@@ -144,9 +126,7 @@ def test_loads_comments_ignored():
 
 
 def test_load_from_string():
-    """
-    Test loading from raw TOML string.
-    """
+    """Test loading from raw TOML string."""
     toml_str = """
         key = "value"
     """
@@ -155,9 +135,7 @@ def test_load_from_string():
 
 
 def test_load_from_path(tmp_path):
-    """
-    Test loading from Path object.
-    """
+    """Test loading from Path object."""
     toml_str = """
         key = "value"
     """
@@ -168,9 +146,7 @@ def test_load_from_path(tmp_path):
 
 
 def test_load_from_text_stream():
-    """
-    Test loading from text stream (StringIO).
-    """
+    """Test loading from text stream (StringIO)."""
     toml_str = """
         key = "value"
     """
@@ -180,9 +156,7 @@ def test_load_from_text_stream():
 
 
 def test_load_from_binary_stream():
-    """
-    Test loading from binary stream (BytesIO).
-    """
+    """Test loading from binary stream (BytesIO)."""
     toml_str = b"""
         key = "value"
     """
@@ -192,9 +166,7 @@ def test_load_from_binary_stream():
 
 
 def test_load_with_custom_encoding(tmp_path):
-    """
-    Test loading with custom encoding.
-    """
+    """Test loading with custom encoding."""
     toml_str = """
         text = "中文"
     """
@@ -205,9 +177,7 @@ def test_load_with_custom_encoding(tmp_path):
 
 
 def test_load_with_none_value():
-    """
-    Test load with none_value parameter.
-    """
+    """Test load with none_value parameter."""
     toml_str = """
         key = "null"
     """
@@ -217,9 +187,7 @@ def test_load_with_none_value():
 
 
 def test_load_empty_file(tmp_path):
-    """
-    Test loading empty file.
-    """
+    """Test loading empty file."""
     toml_str = ""
     file_path = tmp_path / "empty.toml"
     file_path.write_text(toml_str)
@@ -228,9 +196,7 @@ def test_load_empty_file(tmp_path):
 
 
 def test_load_complex_file(tmp_path):
-    """
-    Test loading complex TOML file.
-    """
+    """Test loading complex TOML file."""
     file_path = tmp_path / "complex.toml"
     content = r'''
         # Basic Types
@@ -356,9 +322,7 @@ def test_load_complex_file(tmp_path):
 
 
 def test_dumps_basic():
-    """
-    Test basic dictionary serialization.
-    """
+    """Test basic dictionary serialization."""
     data = {
         "title": "Test",
         "version": 1,
@@ -369,9 +333,7 @@ def test_dumps_basic():
 
 
 def test_dumps_nested():
-    """
-    Test nested dictionary serialization.
-    """
+    """Test nested dictionary serialization."""
     data = {
         "server": {
             "host": "localhost",
@@ -384,9 +346,7 @@ def test_dumps_nested():
 
 
 def test_dumps_arrays():
-    """
-    Test array serialization.
-    """
+    """Test array serialization."""
     data = {
         "numbers": [1, 2, 3],
         "strings": ["a", "b"],
@@ -396,26 +356,15 @@ def test_dumps_arrays():
 
 
 def test_dumps_with_none_value():
-    """
-    Test dumps with none_value parameter.
-    """
-    data = {
-        "key": None,
-    }
+    """Test dumps with none_value parameter."""
+    data = {"key": None}
     toml_str = tomly.dumps(data, none_value="null")
     assert 'key = "null"' in toml_str
 
 
 def test_dumps_pretty():
-    """
-    Test pretty printing mode.
-    """
-    data = {
-        "a": 1,
-        "b": {
-            "c": 2,
-        },
-    }
+    """Test pretty printing mode."""
+    data = {"a": 1, "b": {"c": 2}}
     toml_str = tomly.dumps(data, pretty=True)
     # Pretty mode should add extra formatting
     assert "a = 1" in toml_str
@@ -423,14 +372,10 @@ def test_dumps_pretty():
 
 
 def test_dumps_datadict():
-    """
-    Test serializing DataDict instance.
-    """
+    """Test serializing DataDict instance."""
     dd = DataDict(
         {
-            "a": {
-                "b": 1,
-            },
+            "a": {"b": 1},
         }
     )
     toml_str = tomly.dumps(dd)
@@ -439,9 +384,7 @@ def test_dumps_datadict():
 
 
 def test_dumps_roundtrip():
-    """
-    Test that dumps -> loads is lossless.
-    """
+    """Test that dumps -> loads is lossless."""
     original = {
         "title": "Test",
         "config": {
@@ -456,18 +399,14 @@ def test_dumps_roundtrip():
 
 
 def test_dumps_empty_dict():
-    """
-    Test serializing empty dictionary.
-    """
+    """Test serializing empty dictionary."""
     data = {}
     toml_str = tomly.dumps(data)
     assert toml_str.strip() == ""
 
 
 def test_dumps_special_characters():
-    """
-    Test serializing strings with special characters.
-    """
+    """Test serializing strings with special characters."""
     data = {
         "text": "Line 1\nLine 2",
         "path": "C:\\Users\\test",
@@ -483,13 +422,9 @@ def test_dumps_special_characters():
 
 
 def test_dump_to_path(tmp_path):
-    """
-    Test dumping to Path object.
-    """
+    """Test dumping to Path object."""
     file_path = tmp_path / "output.toml"
-    data = {
-        "key": "value",
-    }
+    data = {"key": "value"}
     num_written = tomly.dump(data, file_path)
 
     assert num_written > 0
@@ -498,13 +433,9 @@ def test_dump_to_path(tmp_path):
 
 
 def test_dump_to_text_stream():
-    """
-    Test dumping to text stream.
-    """
+    """Test dumping to text stream."""
     stream = io.StringIO()
-    data = {
-        "key": "value",
-    }
+    data = {"key": "value"}
     num_written = tomly.dump(data, stream)
 
     assert num_written > 0
@@ -513,13 +444,9 @@ def test_dump_to_text_stream():
 
 
 def test_dump_to_binary_stream():
-    """
-    Test dumping to binary stream.
-    """
+    """Test dumping to binary stream."""
     stream = io.BytesIO()
-    data = {
-        "key": "value",
-    }
+    data = {"key": "value"}
     num_written = tomly.dump(data, stream)
 
     assert num_written > 0
@@ -528,16 +455,9 @@ def test_dump_to_binary_stream():
 
 
 def test_dump_with_pretty(tmp_path):
-    """
-    Test dump with pretty mode.
-    """
+    """Test dump with pretty mode."""
     file_path = tmp_path / "pretty.toml"
-    data = {
-        "a": 1,
-        "b": {
-            "c": 2,
-        },
-    }
+    data = {"a": 1, "b": {"c": 2}}
     tomly.dump(data, file_path, pretty=True)
 
     content = file_path.read_text()
@@ -545,13 +465,9 @@ def test_dump_with_pretty(tmp_path):
 
 
 def test_dump_with_none_value(tmp_path):
-    """
-    Test dump with none_value parameter.
-    """
+    """Test dump with none_value parameter."""
     file_path = tmp_path / "none.toml"
-    data = {
-        "key": None,
-    }
+    data = {"key": None}
     tomly.dump(data, file_path, none_value="N/A")
 
     content = file_path.read_text()
@@ -559,13 +475,9 @@ def test_dump_with_none_value(tmp_path):
 
 
 def test_dump_with_custom_encoding(tmp_path):
-    """
-    Test dump with custom encoding.
-    """
+    """Test dump with custom encoding."""
     file_path = tmp_path / "encoded.toml"
-    data = {
-        "text": "中文",
-    }
+    data = {"text": "中文"}
     tomly.dump(data, file_path, encoding="utf-8")
 
     content = file_path.read_text(encoding="utf-8")
@@ -573,13 +485,9 @@ def test_dump_with_custom_encoding(tmp_path):
 
 
 def test_dump_returns_byte_count(tmp_path):
-    """
-    Test that dump returns correct byte/character count.
-    """
+    """Test that dump returns correct byte/character count."""
     file_path = tmp_path / "test.toml"
-    data = {
-        "key": "value",
-    }
+    data = {"key": "value"}
     num_written = tomly.dump(data, file_path)
 
     actual_size = file_path.stat().st_size
@@ -587,12 +495,8 @@ def test_dump_returns_byte_count(tmp_path):
 
 
 def test_dump_invalid_file_type_raises():
-    """
-    Test that invalid file type raises TypeError.
-    """
-    data = {
-        "key": "value",
-    }
+    """Test that invalid file type raises TypeError."""
+    data = {"key": "value"}
     with pytest.raises(TypeError, match="invalid file type"):
         tomly.dump(data, object())
 
@@ -631,9 +535,7 @@ def test_dump_complex_structure(tmp_path):
 
 
 def test_file_roundtrip(tmp_path):
-    """
-    Test complete file I/O cycle.
-    """
+    """Test complete file I/O cycle."""
     file_path = tmp_path / "config.toml"
 
     # Initial data
@@ -663,14 +565,9 @@ def test_file_roundtrip(tmp_path):
 
 
 def test_string_roundtrip():
-    """
-    Test dumps -> loads roundtrip.
-    """
+    """Test dumps -> loads roundtrip."""
     original = {
-        "app": {
-            "name": "test",
-            "version": "1.0",
-        },
+        "app": {"name": "test", "version": "1.0"},
         "features": ["auth", "api", "logging"],
     }
 
@@ -681,9 +578,7 @@ def test_string_roundtrip():
 
 
 def test_none_value_roundtrip():
-    """
-    Test roundtrip with None values.
-    """
+    """Test roundtrip with None values."""
     original = {
         "key1": None,
         "key2": "value",
@@ -697,18 +592,8 @@ def test_none_value_roundtrip():
 
 
 def test_datadict_roundtrip():
-    """
-    Test roundtrip with DataDict.
-    """
-    original = DataDict(
-        {
-            "nested": {
-                "deep": {
-                    "value": 123,
-                }
-            }
-        }
-    )
+    """Test roundtrip with DataDict."""
+    original = DataDict({"nested": {"deep": {"value": 123}}})
 
     toml_str = tomly.dumps(original)
     restored = DataDict(tomly.loads(toml_str))
@@ -722,26 +607,20 @@ def test_datadict_roundtrip():
 
 
 def test_loads_invalid_toml():
-    """
-    Test that invalid TOML raises error.
-    """
+    """Test that invalid TOML raises error."""
     invalid_toml = "this is [ not valid toml"
     with pytest.raises(expected_exception=tomly.rtoml.TomlParsingError):  # rtoml will raise an error
         tomly.loads(invalid_toml)
 
 
 def test_load_nonexistent_file():
-    """
-    Test loading non-existent file raises error.
-    """
+    """Test loading non-existent file raises error."""
     with pytest.raises(expected_exception=FileNotFoundError):
         tomly.load(Path("/nonexistent/file.toml"))
 
 
 def test_dump_to_readonly_path(tmp_path):
-    """
-    Test dumping to read-only location.
-    """
+    """Test dumping to read-only location."""
     file_path = tmp_path / "readonly.toml"
     file_path.write_text("test")
     file_path.chmod(0o444)  # Read-only
@@ -759,17 +638,8 @@ def test_dump_to_readonly_path(tmp_path):
 
 
 def test_very_large_structure():
-    """
-    Test handling very large data structures.
-    """
-    large_data = {
-        f"key_{i}": {
-            "nested": {
-                "value": i,
-            }
-        }
-        for i in range(1000)
-    }
+    """Test handling very large data structures."""
+    large_data = {f"key_{i}": {"nested": {"value": i}} for i in range(1000)}
     toml_str = tomly.dumps(large_data)
     restored = tomly.loads(toml_str)
     assert len(restored) == 1000
@@ -777,9 +647,7 @@ def test_very_large_structure():
 
 
 def test_deeply_nested_structure():
-    """
-    Test handling deeply nested structures.
-    """
+    """Test handling deeply nested structures."""
     data = {}
     current = data
     for i in range(20):
@@ -798,9 +666,7 @@ def test_deeply_nested_structure():
 
 
 def test_unicode_handling():
-    """
-    Test Unicode character handling.
-    """
+    """Test Unicode character handling."""
     data = {
         "chinese": "中文",
         "emoji": "🚀🎉",
@@ -813,9 +679,7 @@ def test_unicode_handling():
 
 
 def test_special_float_values():
-    """
-    Test special float values.
-    """
+    """Test special float values."""
     data = {
         "inf": float("inf"),
         "neg_inf": float("-inf"),
@@ -824,3 +688,29 @@ def test_special_float_values():
     restored = tomly.loads(toml_str)
     assert restored["inf"] == float("inf")
     assert restored["neg_inf"] == float("-inf")
+
+
+# ==============================================================
+# Test sanitize API.
+# ==============================================================
+
+
+def test_sanitize_path():
+    """Test sanitize specifically with Path."""
+    p = Path("/tmp/test")
+    assert tomly.sanitize(p) == str(p)
+
+
+def test_sanitize_iterable():
+    """Test sanitize with tuple/set to cover list|tuple|set branch fully."""
+    s = {Path("a"), Path("b")}
+    res = tomly.sanitize(s)
+    assert isinstance(res, list)
+    assert str(Path("a")) in res
+
+
+def test_sanitize_nested():
+    """Ensure recursive sanitize works."""
+    data = {"a": [Path("p")]}
+    res = tomly.sanitize(data)
+    assert res["a"][0] == "p"

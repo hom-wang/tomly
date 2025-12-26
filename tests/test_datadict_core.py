@@ -13,23 +13,17 @@ from tomly import DataDict
 
 
 def test_empty_initialization():
-    """
-    Test creating an empty DataDict.
-    """
+    """Test creating an empty DataDict."""
     dd = DataDict()
     assert len(dd) == 0
     assert isinstance(dd, dict)
 
 
 def test_dict_initialization():
-    """
-    Test initialization from a standard dict.
-    """
+    """Test initialization from a standard dict."""
     data = {
         "a": 1,
-        "b": {
-            "c": 2,
-        },
+        "b": {"c": 2},
     }
     dd = DataDict(data)
     assert dd["a"] == 1
@@ -38,36 +32,22 @@ def test_dict_initialization():
 
 
 def test_kwargs_initialization():
-    """
-    Test initialization using keyword arguments.
-    """
+    """Test initialization using keyword arguments."""
     dd = DataDict(x=1, y=2)
     assert dd.x == 1
     assert dd.y == 2
 
 
 def test_mixed_initialization():
-    """
-    Test initialization with both dict and kwargs.
-    """
+    """Test initialization with both dict and kwargs."""
     dd = DataDict({"a": 1}, b=2)
     assert dd.a == 1
     assert dd.b == 2
 
 
 def test_nested_dict_wrapping():
-    """
-    Test that nested dicts are automatically wrapped.
-    """
-    data = {
-        "level1": {
-            "level2": {
-                "level3": {
-                    "value": "deep",
-                }
-            }
-        }
-    }
+    """Test that nested dicts are automatically wrapped."""
+    data = {"level1": {"level2": {"level3": {"value": "deep"}}}}
     dd = DataDict(data)
     assert isinstance(dd.level1, DataDict)
     assert isinstance(dd.level1.level2, DataDict)
@@ -76,19 +56,11 @@ def test_nested_dict_wrapping():
 
 
 def test_list_with_dicts_wrapping():
-    """
-    Test that dicts inside lists are wrapped.
-    """
+    """Test that dicts inside lists are wrapped."""
     data = {
         "items_": [
-            {
-                "id": 1,
-                "name": "first",
-            },
-            {
-                "id": 2,
-                "name": "second",
-            },
+            {"id": 1, "name": "first"},
+            {"id": 2, "name": "second"},
         ]
     }
     dd = DataDict(data)
@@ -99,9 +71,7 @@ def test_list_with_dicts_wrapping():
 
 
 def test_list_without_dicts_not_wrapped():
-    """
-    Test that lists without dicts remain unchanged.
-    """
+    """Test that lists without dicts remain unchanged."""
     data = {
         "numbers": [1, 2, 3],
         "strings": ["a", "b", "c"],
@@ -112,21 +82,15 @@ def test_list_without_dicts_not_wrapped():
 
 
 def test_empty_list_handling():
-    """
-    Test that empty lists are handled correctly.
-    """
-    data = {
-        "empty": [],
-    }
+    """Test that empty lists are handled correctly."""
+    data = {"empty": []}
 
     dd = DataDict(data)
     assert dd.empty == []
 
 
 def test_already_datadict_not_rewrapped():
-    """
-    Test that existing DataDict instances are not rewrapped.
-    """
+    """Test that existing DataDict instances are not rewrapped."""
     inner = DataDict({"x": 1})
     outer = DataDict({"inner": inner})
     assert outer.inner is inner
@@ -138,23 +102,14 @@ def test_already_datadict_not_rewrapped():
 
 
 def test_basic_attribute_get():
-    """
-    Test reading attributes via dot notation.
-    """
-    dd = DataDict(
-        {
-            "name": "test",
-            "count": 42,
-        }
-    )
+    """Test reading attributes via dot notation."""
+    dd = DataDict({"name": "test", "count": 42})
     assert dd.name == "test"
     assert dd.count == 42
 
 
 def test_basic_attribute_set():
-    """
-    Test setting attributes via dot notation.
-    """
+    """Test setting attributes via dot notation."""
     dd = DataDict()
     dd.name = "test"
     dd.count = 42
@@ -163,50 +118,29 @@ def test_basic_attribute_set():
 
 
 def test_attribute_delete():
-    """
-    Test deleting attributes via del statement.
-    """
-    dd = DataDict(
-        {
-            "x": 1,
-            "y": 2,
-        }
-    )
+    """Test deleting attributes via del statement."""
+    dd = DataDict({"x": 1, "y": 2})
     del dd.x
     assert "x" not in dd
     assert dd.y == 2
 
 
 def test_nonexistent_attribute_raises_error():
-    """
-    Test that accessing non-existent attributes raises AttributeError.
-    """
-    dd = DataDict(
-        {
-            "a": 1,
-        }
-    )
+    """Test that accessing non-existent attributes raises AttributeError."""
+    dd = DataDict({"a": 1})
     with pytest.raises(AttributeError, match="no attribute 'b'"):
         _ = dd.b
 
 
 def test_delete_nonexistent_attribute_raises_error():
-    """
-    Test that deleting non-existent attributes raises AttributeError.
-    """
-    dd = DataDict(
-        {
-            "a": 1,
-        }
-    )
+    """Test that deleting non-existent attributes raises AttributeError."""
+    dd = DataDict({"a": 1})
     with pytest.raises(AttributeError, match="no attribute 'b'"):
         del dd.b
 
 
 def test_invalid_identifier_keys():
-    """
-    Test that keys with invalid Python identifiers require dict access.
-    """
+    """Test that keys with invalid Python identifiers require dict access."""
     dd = DataDict(
         {
             "key-with-dash": 1,
@@ -226,14 +160,8 @@ def test_invalid_identifier_keys():
 
 
 def test_private_attributes_not_intercepted():
-    """
-    Test that private attributes (starting with _) work normally.
-    """
-    dd = DataDict(
-        {
-            "a": 1,
-        }
-    )
+    """Test that private attributes (starting with _) work normally."""
+    dd = DataDict({"a": 1})
     dd._private = "test"
     assert hasattr(dd, "_private")
     assert dd._private == "test"
@@ -241,33 +169,16 @@ def test_private_attributes_not_intercepted():
 
 
 def test_nested_attribute_modification():
-    """
-    Test modifying nested attributes.
-    """
-    dd = DataDict(
-        {
-            "server": {
-                "host": "localhost",
-                "port": 8080,
-            }
-        }
-    )
+    """Test modifying nested attributes."""
+    dd = DataDict({"server": {"host": "localhost", "port": 8080}})
     dd.server.port = 9000
     assert dd["server"]["port"] == 9000
     assert dd.server.port == 9000
 
 
 def test_dir_includes_valid_keys():
-    """
-    Test that __dir__ includes valid identifier keys.
-    """
-    dd = DataDict(
-        {
-            "valid_key": 1,
-            "invalid-key": 2,
-            "123": 3,
-        }
-    )
+    """Test that __dir__ includes valid identifier keys."""
+    dd = DataDict({"valid_key": 1, "invalid-key": 2, "123": 3})
     dir_result = dir(dd)
     assert "valid_key" in dir_result
     assert "invalid-key" not in dir_result
@@ -280,100 +191,50 @@ def test_dir_includes_valid_keys():
 
 
 def test_len():
-    """
-    Test len() function.
-    """
-    dd = DataDict(
-        {
-            "a": 1,
-            "b": 2,
-            "c": 3,
-        }
-    )
+    """Test len() function."""
+    dd = DataDict({"a": 1, "b": 2, "c": 3})
     assert len(dd) == 3
 
 
 def test_contains():
-    """
-    Test 'in' operator.
-    """
-    dd = DataDict(
-        {
-            "a": 1,
-            "b": 2,
-        }
-    )
+    """Test 'in' operator."""
+    dd = DataDict({"a": 1, "b": 2})
     assert "a" in dd
     assert "c" not in dd
 
 
 def test_keys():
-    """
-    Test keys() method.
-    """
-    dd = DataDict(
-        {
-            "a": 1,
-            "b": 2,
-        }
-    )
+    """Test keys() method."""
+    dd = DataDict({"a": 1, "b": 2})
     keys = list(dd.keys())
     assert set(keys) == {"a", "b"}
 
 
 def test_values():
-    """
-    Test values() method.
-    """
-    dd = DataDict(
-        {
-            "a": 1,
-            "b": 2,
-        }
-    )
+    """Test values() method."""
+    dd = DataDict({"a": 1, "b": 2})
     values = list(dd.values())
     assert set(values) == {1, 2}
 
 
 def test_items():
-    """
-    Test items() method.
-    """
-    dd = DataDict(
-        {
-            "a": 1,
-            "b": 2,
-        }
-    )
+    """Test items() method."""
+    dd = DataDict({"a": 1, "b": 2})
     items = list(dd.items())
     assert set(items) == {("a", 1), ("b", 2)}
 
 
 def test_get_with_default():
-    """
-    Test get() method with default value.
-    """
-    dd = DataDict(
-        {
-            "a": 1,
-        }
-    )
+    """Test get() method with default value."""
+    dd = DataDict({"a": 1})
     assert dd.get("a") == 1
     assert dd.get("b") is None
     assert dd.get("b", "default") == "default"
 
 
 def test_iteration():
-    """
-    Test iterating over keys.
-    """
-    dd = DataDict(
-        {
-            "a": 1,
-            "b": 2,
-            "c": 3,
-        }
-    )
+    """Test iterating over keys."""
+    dd = DataDict({"a": 1, "b": 2, "c": 3})
     keys = [k for k in dd]  # noqa: C416
     assert set(keys) == {"a", "b", "c"}
 
@@ -382,27 +243,10 @@ def test_iteration():
 
 
 def test_equality():
-    """
-    Test equality comparison.
-    """
-    dd1 = DataDict(
-        {
-            "a": 1,
-            "b": 2,
-        }
-    )
-    dd2 = DataDict(
-        {
-            "a": 1,
-            "b": 2,
-        }
-    )
-    dd3 = DataDict(
-        {
-            "a": 1,
-            "b": 3,
-        }
-    )
+    """Test equality comparison."""
+    dd1 = DataDict({"a": 1, "b": 2})
+    dd2 = DataDict({"a": 1, "b": 2})
+    dd3 = DataDict({"a": 1, "b": 3})
 
     assert dd1 == dd2
     assert dd1 != dd3
@@ -410,14 +254,8 @@ def test_equality():
 
 
 def test_repr():
-    """
-    Test string representation.
-    """
-    dd = DataDict(
-        {
-            "a": 1,
-        }
-    )
+    """Test string representation."""
+    dd = DataDict({"a": 1})
     repr_str = repr(dd)
     assert "a" in repr_str
     assert "1" in repr_str
@@ -429,37 +267,23 @@ def test_repr():
 
 
 def test_new_dict_value_gets_wrapped():
-    """
-    Test that newly assigned dict values are wrapped.
-    """
+    """Test that newly assigned dict values are wrapped."""
     dd = DataDict()
-    dd.config = {
-        "host": "localhost",
-    }
+    dd.config = {"host": "localhost"}
     assert isinstance(dd.config, DataDict)
     assert dd.config.host == "localhost"
 
 
 def test_nested_assignment_wrapping():
-    """
-    Test wrapping on nested assignment.
-    """
-    dd = DataDict(
-        {
-            "level1": {},
-        }
-    )
-    dd.level1.level2 = {
-        "value": 42,
-    }
+    """Test wrapping on nested assignment."""
+    dd = DataDict({"level1": {}})
+    dd.level1.level2 = {"value": 42}
     assert isinstance(dd.level1.level2, DataDict)
     assert dd.level1.level2.value == 42
 
 
 def test_scalar_values_not_wrapped():
-    """
-    Test that scalar values remain unchanged.
-    """
+    """Test that scalar values remain unchanged."""
     dd = DataDict(
         {
             "int": 42,
@@ -477,9 +301,7 @@ def test_scalar_values_not_wrapped():
 
 
 def test_mixed_list_wrapping():
-    """
-    Test wrapping of lists with mixed content.
-    """
+    """Test wrapping of lists with mixed content."""
     dd = DataDict(
         {
             "mixed": [
@@ -500,45 +322,23 @@ def test_mixed_list_wrapping():
 
 
 def test_update_wraps_values():
-    """
-    Test that update() wraps new values.
-    """
-    dd = DataDict(
-        {
-            "a": 1,
-        }
-    )
-    dd.update(
-        {
-            "b": {
-                "c": 2,
-            }
-        }
-    )
+    """Test that update() wraps new values."""
+    dd = DataDict({"a": 1})
+    dd.update({"b": {"c": 2}})
     assert isinstance(dd.b, DataDict)
     assert dd.b.c == 2
 
     dd = DataDict(
-        {
-            "a": 1,
-        },
+        {"a": 1},
         coerce_mapping=False,
     )
-    dd.update(
-        {
-            "b": {
-                "c": 2,
-            }
-        }
-    )
+    dd.update({"b": {"c": 2}})
     assert isinstance(dd.b, dict)
     assert dd.b["c"] == 2
 
 
 def test_setdefault_wraps_values():
-    """
-    Test that setdefault() wraps values.
-    """
+    """Test that setdefault() wraps values."""
     dd = DataDict()
     result = dd.setdefault("config", {"port": 8080})
     assert isinstance(result, DataDict)
@@ -550,3 +350,82 @@ def test_setdefault_wraps_values():
     assert isinstance(result, dict)
     assert isinstance(dd.config, dict)
     assert dd.config["port"] == 8080
+
+
+# ==============================================================
+# Test internal wrapping logic and additional mutable methods.
+# ==============================================================
+
+
+def test_wrap_idempotent():
+    """Test that _wrap returns the object as-is if it's already a DataDict."""
+    dd = DataDict({"a": 1})
+
+    # Direct call to _wrap should return the same object
+    # This hits line 135: if value_type is cls: return value
+    assert DataDict._wrap(dd) is dd
+
+    # Also verify nesting behavior:
+    # if we initialize a DataDict with another DataDict as a value
+    dd_container = DataDict({"val": dd})
+    assert dd_container["val"] is dd
+
+
+def test_wrap_dict_subclass():
+    """Test that _wrap correctly wraps a custom dict subclass."""
+
+    class MyDict(dict):
+        pass
+
+    md = MyDict({"a": 1})
+    # Passing a custom dict subclass should trigger the slow path and wrap it into a DataDict
+    wrapped = DataDict._wrap(md)
+    assert isinstance(wrapped, DataDict)
+    assert wrapped.a == 1
+    # Ensure it's not the same object (it was converted)
+    assert wrapped is not md
+
+
+def test_clear_unfrozen():
+    """Test clear() on unfrozen DataDict."""
+    dd = DataDict({"a": 1})
+    dd.clear()
+    assert len(dd) == 0
+
+
+def test_pop_unfrozen():
+    """Test pop() on unfrozen DataDict."""
+    dd = DataDict({"a": 1})
+    val = dd.pop("a")
+    assert val == 1
+    assert "a" not in dd
+
+
+def test_popitem_unfrozen():
+    """Test popitem() on unfrozen DataDict."""
+    dd = DataDict({"a": 1})
+    item = dd.popitem()
+    assert item == ("a", 1)
+    assert len(dd) == 0
+
+
+def test_update_errors():
+    """Test update with too many args."""
+    dd = DataDict()
+    with pytest.raises(TypeError, match="expected at most 1 argument"):
+        dd.update({}, {})
+
+
+def test_update_iterable():
+    """Test update with iterable of pairs."""
+    dd = DataDict()
+    dd.update([("a", 1), ("b", 2)])
+    assert dd.a == 1
+    assert dd.b == 2
+
+
+def test_update_kwargs():
+    """Test update with kwargs."""
+    dd = DataDict()
+    dd.update(c=3)
+    assert dd.c == 3
