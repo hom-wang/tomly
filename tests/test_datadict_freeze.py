@@ -13,209 +13,107 @@ from tomly import DataDict
 
 
 def test_freeze_returns_self():
-    """
-    Test that freeze() returns the instance for chaining.
-    """
-    dd = DataDict(
-        {
-            "a": 1,
-        }
-    )
+    """Test that freeze() returns the instance for chaining."""
+    dd = DataDict({"a": 1})
     result = dd.freeze()
     assert result is dd
 
 
 def test_freeze_sets_frozen_flag():
-    """
-    Test that freeze() sets the internal _frozen flag.
-    """
-    dd = DataDict(
-        {
-            "a": 1,
-        }
-    )
+    """Test that freeze() sets the internal _frozen flag."""
+    dd = DataDict({"a": 1})
     assert dd._frozen is False
     dd.freeze()
     assert dd._frozen is True
 
 
 def test_frozen_prevents_setitem():
-    """
-    Test that frozen DataDict prevents __setitem__.
-    """
-    dd = DataDict(
-        {
-            "a": 1,
-        }
-    ).freeze()
+    """Test that frozen DataDict prevents __setitem__."""
+    dd = DataDict({"a": 1}).freeze()
     with pytest.raises(TypeError, match="Cannot modify a frozen DataDict"):
         dd["b"] = 2
 
 
 def test_frozen_prevents_attribute_assignment():
-    """
-    Test that frozen DataDict prevents attribute assignment.
-    """
-    dd = DataDict(
-        {
-            "a": 1,
-        }
-    ).freeze()
+    """Test that frozen DataDict prevents attribute assignment."""
+    dd = DataDict({"a": 1}).freeze()
     with pytest.raises(TypeError, match="Cannot modify a frozen DataDict"):
         dd.b = 2
 
 
 def test_frozen_prevents_delitem():
-    """
-    Test that frozen DataDict prevents __delitem__.
-    """
-    dd = DataDict(
-        {
-            "a": 1,
-            "b": 2,
-        }
-    ).freeze()
+    """Test that frozen DataDict prevents __delitem__."""
+    dd = DataDict({"a": 1, "b": 2}).freeze()
     with pytest.raises(TypeError, match="Cannot modify a frozen DataDict"):
         del dd["a"]
 
 
 def test_frozen_prevents_attribute_deletion():
-    """
-    Test that frozen DataDict prevents del attribute.
-    """
-    dd = DataDict(
-        {
-            "a": 1,
-            "b": 2,
-        }
-    ).freeze()
+    """Test that frozen DataDict prevents del attribute."""
+    dd = DataDict({"a": 1, "b": 2}).freeze()
     with pytest.raises(TypeError, match="Cannot modify a frozen DataDict"):
         del dd.a
 
 
 def test_frozen_prevents_clear():
-    """
-    Test that frozen DataDict prevents clear().
-    """
-    dd = DataDict(
-        {
-            "a": 1,
-            "b": 2,
-        }
-    ).freeze()
+    """Test that frozen DataDict prevents clear()."""
+    dd = DataDict({"a": 1, "b": 2}).freeze()
     with pytest.raises(TypeError, match="Cannot modify a frozen DataDict"):
         dd.clear()
 
 
 def test_frozen_prevents_pop():
-    """
-    Test that frozen DataDict prevents pop().
-    """
-    dd = DataDict(
-        {
-            "a": 1,
-            "b": 2,
-        }
-    ).freeze()
+    """Test that frozen DataDict prevents pop()."""
+    dd = DataDict({"a": 1, "b": 2}).freeze()
     with pytest.raises(TypeError, match="Cannot modify a frozen DataDict"):
         dd.pop("a")
 
 
 def test_frozen_prevents_popitem():
-    """
-    Test that frozen DataDict prevents popitem().
-    """
-    dd = DataDict(
-        {
-            "a": 1,
-        }
-    ).freeze()
+    """Test that frozen DataDict prevents popitem()."""
+    dd = DataDict({"a": 1}).freeze()
     with pytest.raises(TypeError, match="Cannot modify a frozen DataDict"):
         dd.popitem()
 
 
 def test_frozen_prevents_update():
-    """
-    Test that frozen DataDict prevents update().
-    """
-    dd = DataDict(
-        {
-            "a": 1,
-        }
-    ).freeze()
+    """Test that frozen DataDict prevents update()."""
+    dd = DataDict({"a": 1}).freeze()
     with pytest.raises(TypeError, match="Cannot modify a frozen DataDict"):
         dd.update({"b": 2})
 
 
 def test_frozen_prevents_setdefault():
-    """
-    Test that frozen DataDict prevents setdefault().
-    """
-    dd = DataDict(
-        {"a": 1},
-    ).freeze()
+    """Test that frozen DataDict prevents setdefault()."""
+    dd = DataDict({"a": 1}).freeze()
     with pytest.raises(TypeError, match="Cannot modify a frozen DataDict"):
         dd.setdefault("b", 2)
 
 
 def test_frozen_prevents_set_nested():
-    """
-    Test that frozen DataDict prevents set_nested().
-    """
-    dd = DataDict(
-        {
-            "a": {
-                "b": 1,
-            }
-        }
-    ).freeze()
+    """Test that frozen DataDict prevents set_nested()."""
+    dd = DataDict({"a": {"b": 1}}).freeze()
     with pytest.raises(TypeError, match="Cannot modify a frozen DataDict"):
         dd.set_nested("a.c", 2)
 
 
 def test_frozen_prevents_delete_nested():
-    """
-    Test that frozen DataDict prevents delete_nested().
-    """
-    dd = DataDict(
-        {
-            "a": {
-                "b": 1,
-            }
-        }
-    ).freeze()
+    """Test that frozen DataDict prevents delete_nested()."""
+    dd = DataDict({"a": {"b": 1}}).freeze()
     with pytest.raises(TypeError, match="Cannot modify a frozen DataDict"):
         dd.delete_nested("a.b")
 
 
 def test_frozen_prevents_merge():
-    """
-    Test that frozen DataDict prevents merge().
-    """
-    dd = DataDict(
-        {
-            "a": 1,
-        }
-    ).freeze()
+    """Test that frozen DataDict prevents merge()."""
+    dd = DataDict({"a": 1}).freeze()
     with pytest.raises(TypeError, match="Cannot modify a frozen DataDict"):
         dd.merge({"b": 2})
 
 
 def test_freeze_is_recursive():
-    """
-    Test that freeze() recursively freezes nested DataDicts.
-    """
-    dd = DataDict(
-        {
-            "level1": {
-                "level2": {
-                    "level3": {
-                        "value": 1,
-                    }
-                }
-            }
-        }
-    )
+    """Test that freeze() recursively freezes nested DataDicts."""
+    dd = DataDict({"level1": {"level2": {"level3": {"value": 1}}}})
     dd.freeze()
 
     # All levels should be frozen
@@ -226,18 +124,8 @@ def test_freeze_is_recursive():
 
 
 def test_nested_frozen_prevents_modification():
-    """
-    Test that nested frozen DataDicts prevent modification.
-    """
-    dd = DataDict(
-        {
-            "outer": {
-                "inner": {
-                    "value": 1,
-                }
-            }
-        }
-    ).freeze()
+    """Test that nested frozen DataDicts prevent modification."""
+    dd = DataDict({"outer": {"inner": {"value": 1}}}).freeze()
 
     with pytest.raises(TypeError):
         dd.outer.inner.value = 2
@@ -247,32 +135,16 @@ def test_nested_frozen_prevents_modification():
 
 
 def test_freeze_idempotent():
-    """
-    Test that calling freeze() multiple times is safe.
-    """
-    dd = DataDict(
-        {
-            "a": 1,
-        }
-    )
+    """Test that calling freeze() multiple times is safe."""
+    dd = DataDict({"a": 1})
     dd.freeze()
     dd.freeze()  # Should not raise error
     assert dd._frozen is True
 
 
 def test_frozen_allows_read_operations():
-    """
-    Test that frozen DataDict allows all read operations.
-    """
-    dd = DataDict(
-        {
-            "a": 1,
-            "b": {
-                "c": 2,
-            },
-            "d": [3, 4],
-        }
-    ).freeze()
+    """Test that frozen DataDict allows all read operations."""
+    dd = DataDict({"a": 1, "b": {"c": 2}, "d": [3, 4]}).freeze()
 
     # All read operations should work
     assert dd.a == 1
@@ -286,17 +158,8 @@ def test_frozen_allows_read_operations():
 
 
 def test_frozen_allows_conversion_operations():
-    """
-    Test that frozen DataDict allows conversion operations.
-    """
-    dd = DataDict(
-        {
-            "a": 1,
-            "b": {
-                "c": 2,
-            },
-        }
-    ).freeze()
+    """Test that frozen DataDict allows conversion operations."""
+    dd = DataDict({"a": 1, "b": {"c": 2}}).freeze()
 
     # Conversions should work
     as_dict = dd.to_dict()
@@ -309,20 +172,12 @@ def test_frozen_allows_conversion_operations():
 
 
 def test_freeze_with_lists_containing_datadicts():
-    """
-    Test freezing DataDicts that contain lists with DataDicts.
-    """
+    """Test freezing DataDicts that contain lists with DataDicts."""
     dd = DataDict(
         {
             "items_": [
-                {
-                    "id": 1,
-                    "name": "first",
-                },
-                {
-                    "id": 2,
-                    "name": "second",
-                },
+                {"id": 1, "name": "first"},
+                {"id": 2, "name": "second"},
             ]
         }
     ).freeze()
@@ -337,9 +192,7 @@ def test_freeze_with_lists_containing_datadicts():
 
 
 def test_partially_frozen_structure():
-    """
-    Test behavior with partially frozen structures.
-    """
+    """Test behavior with partially frozen structures."""
     inner = DataDict({"x": 1})
     outer = DataDict({"inner": inner})
 
@@ -360,9 +213,7 @@ def test_partially_frozen_structure():
 
 
 def test_freeze_empty_datadict():
-    """
-    Test freezing an empty DataDict.
-    """
+    """Test freezing an empty DataDict."""
     dd = DataDict().freeze()
     assert dd._frozen is True
     assert len(dd) == 0
@@ -372,14 +223,8 @@ def test_freeze_empty_datadict():
 
 
 def test_frozen_error_message_clarity():
-    """
-    Test that frozen errors have clear messages.
-    """
-    dd = DataDict(
-        {
-            "a": 1,
-        }
-    ).freeze()
+    """Test that frozen errors have clear messages."""
+    dd = DataDict({"a": 1}).freeze()
 
     try:
         dd.b = 2
@@ -389,14 +234,8 @@ def test_frozen_error_message_clarity():
 
 
 def test_modification_sequence_before_and_after_freeze():
-    """
-    Test normal modification then freeze prevents further changes.
-    """
-    dd = DataDict(
-        {
-            "a": 1,
-        }
-    )
+    """Test normal modification then freeze prevents further changes."""
+    dd = DataDict({"a": 1})
 
     # Before freeze: modifications work
     dd.b = 2
@@ -416,37 +255,21 @@ def test_modification_sequence_before_and_after_freeze():
 
 
 def test_frozen_with_complex_nested_structure():
-    """
-    Test freezing a complex nested structure.
-    """
+    """Test freezing a complex nested structure."""
     dd = DataDict(
         {
             "database": {
                 "primary": {
                     "host": "localhost",
                     "port": 5432,
-                    "credentials": {
-                        "user": "admin",
-                        "password": "secret",
-                    },
+                    "credentials": {"user": "admin", "password": "secret"},
                 },
                 "replicas": [
-                    {
-                        "host": "replica1",
-                        "port": 5433,
-                    },
-                    {
-                        "host": "replica2",
-                        "port": 5434,
-                    },
+                    {"host": "replica1", "port": 5433},
+                    {"host": "replica2", "port": 5434},
                 ],
             },
-            "cache": {
-                "redis": {
-                    "host": "localhost",
-                    "port": 6379,
-                }
-            },
+            "cache": {"redis": {"host": "localhost", "port": 6379}},
         }
     ).freeze()
 

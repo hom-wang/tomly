@@ -16,6 +16,7 @@ __all__ = [
     "loads",
     "dumps",
     "dump",
+    "sanitize",
     "DataDict",
 ]
 
@@ -46,7 +47,7 @@ class DataDict(dict):
         """
         Initialize and recursively wrap nested structures.
 
-        Parameters:
+        Args:
             interpolate_env (bool):
                 If True, expand environment variables in string values, Syntax: `${VAR_NAME:default_value}` or `${VAR_NAME}`
         """
@@ -62,27 +63,21 @@ class DataDict(dict):
                 super().__setitem__(key, wrapped)
 
     def __getattr__(self, key: str) -> Any:
-        """
-        Map attribute access to dictionary lookup.
-        """
+        """Map attribute access to dictionary lookup."""
         try:
             return self[key]
         except KeyError:
             raise AttributeError(f"DataDict object has no attribute '{key}'") from None
 
     def __setattr__(self, key: str, value: Any) -> None:
-        """
-        Allow attribute assignment with auto-wrapping, protecting private attributes.
-        """
+        """Allow attribute assignment with auto-wrapping, protecting private attributes."""
         if key.startswith("_"):
             super().__setattr__(key, value)
         else:
             self[key] = value
 
     def __delattr__(self, key: str) -> None:
-        """
-        Allow deleting items using attribute syntax.
-        """
+        """Allow deleting items using attribute syntax."""
         self._check_frozen()
         try:
             del self[key]
@@ -90,9 +85,7 @@ class DataDict(dict):
             raise AttributeError(f"DataDict object has no attribute '{key}'") from None
 
     def __setitem__(self, key: Any, value: Any) -> None:
-        """
-        Intercept all data insertion to ensure recursive wrapping.
-        """
+        """Intercept all data insertion to ensure recursive wrapping."""
         self._check_frozen()
 
         if self._coerce_mapping:
@@ -101,16 +94,12 @@ class DataDict(dict):
         super().__setitem__(key, value)
 
     def __delitem__(self, key: Any) -> None:
-        """
-        Delete item with frozen check.
-        """
+        """Delete item with frozen check."""
         self._check_frozen()
         super().__delitem__(key)
 
     def __dir__(self) -> list[str]:
-        """
-        Return the list of attributes for the object.
-        """
+        """Return the list of attributes for the object."""
         if DataDict._BASE_DIR is None:
             DataDict._BASE_DIR = frozenset(super().__dir__())
         keys = {k for k in self if isinstance(k, str) and k.isidentifier()}
@@ -121,14 +110,14 @@ class DataDict(dict):
         """
         Recursively wrap dictionaries and sequences into DataDict instances.
 
-        Parameters:
+        Args:
             value (Any):
                 The data structure or scalar value to wrap.
             interpolate_env (bool):
                 If True, strings containing environment variable patterns will be expanded (default: False).
 
         Returns:
-            (Any):
+            Any:
                 A DataDict if the input was a mapping, a list of wrapped items if the input
                 was a list, or the original value if no wrapping was required.
         """
@@ -167,12 +156,12 @@ class DataDict(dict):
         """
         Recursively convert DataDict instances back to standard Python dictionaries.
 
-        Parameters:
+        Args:
             value (Any):
                 The DataDict or structure containing DataDicts to be converted.
 
         Returns:
-            (Any):
+            Any:
                 Standard Python dictionaries and lists with all DataDict wrappers removed.
         """
         value_type = type(value)
@@ -203,12 +192,12 @@ class DataDict(dict):
             >>> DataDict._interpolate_env("${MISSING:default}")
             'default'
 
-        Parameters:
+        Args:
             value (str):
                 The string potentially containing environment variable placeholders.
 
         Returns:
-            (str):
+            str:
                 The processed string with variables replaced by their system values or
                 defaults. If no match is found and no default is provided, the original
                 placeholder is preserved.
@@ -236,14 +225,14 @@ class DataDict(dict):
         """
         Normalize various path formats into a consistent list of keys.
 
-        Parameters:
+        Args:
             path (str | Iterable[str]):
                 A string delimited by the separator or an iterable of individual keys.
             separator (str):
                 The character used to split the path if it is provided as a string.
 
         Returns:
-            (list[str]):
+            list[str]:
                 A flat list of string keys representing the hierarchical path.
         """
         if isinstance(path, str):
@@ -251,9 +240,7 @@ class DataDict(dict):
         return list(path)
 
     def _check_frozen(self) -> None:
-        """
-        Verify the mutation state of the DataDict before performing write operations.
-        """
+        """Verify the mutation state of the DataDict before performing write operations."""
         if self._frozen:
             raise TypeError("Cannot modify a frozen DataDict")
 
@@ -265,30 +252,22 @@ class DataDict(dict):
                 self._freeze_value(item)
 
     def clear(self) -> None:
-        """
-        Clear all items with frozen check.
-        """
+        """Clear all items with frozen check."""
         self._check_frozen()
         super().clear()
 
     def pop(self, *args) -> Any:
-        """
-        Pop item with frozen check.
-        """
+        """Pop item with frozen check."""
         self._check_frozen()
         return super().pop(*args)
 
     def popitem(self) -> tuple[Any, Any]:
-        """
-        Pop item with frozen check.
-        """
+        """Pop item with frozen check."""
         self._check_frozen()
         return super().popitem()
 
     def update(self, *args, **kwargs) -> None:
-        """
-        Update with frozen check and proper value wrapping.
-        """
+        """Update with frozen check and proper value wrapping."""
         self._check_frozen()
 
         if not self._coerce_mapping:
@@ -312,9 +291,7 @@ class DataDict(dict):
             self[k] = v
 
     def setdefault(self, key: Any, default: Any = None) -> Any:
-        """
-        Set default with frozen check and proper value wrapping.
-        """
+        """Set default with frozen check and proper value wrapping."""
         self._check_frozen()
 
         if not self._coerce_mapping:
@@ -328,7 +305,7 @@ class DataDict(dict):
         """
         Safely retrieve a value from a deep path without raising errors.
 
-        Parameters:
+        Args:
             path (str | Iterable[str]):
                 Dot-separated string or iterable of keys representing the path.
             default (Any):
@@ -337,7 +314,7 @@ class DataDict(dict):
                 Character used to split the path string (default: ".").
 
         Returns:
-            (Any):
+            Any:
                 The value at the specified path, or the default value if the path is invalid.
         """
         if isinstance(path, str):
@@ -359,7 +336,7 @@ class DataDict(dict):
         """
         Set a value at a deep path, auto-creating intermediate DataDicts as needed.
 
-        Parameters:
+        Args:
             path (str | Iterable[str]):
                 Dot-separated string or iterable of keys where the value should be set.
             value (Any):
@@ -390,14 +367,14 @@ class DataDict(dict):
         """
         Delete a nested path and return a success status.
 
-        Parameters:
+        Args:
             path (str | Iterable[str]):
                 Dot-separated string or iterable of keys to be removed.
             separator (str):
                 Character used to split the path string (default: ".").
 
         Returns:
-            (bool):
+            bool:
                 True if the path existed and was successfully deleted, False otherwise.
         """
         self._check_frozen()
@@ -420,7 +397,7 @@ class DataDict(dict):
         Deeply convert the DataDict and all its nested children back to standard Python dicts.
 
         Returns:
-            (dict[str, Any]):
+            dict[str, Any]:
                 A standard Python dictionary representing the current data structure.
         """
         return self._unwrap(self)
@@ -429,7 +406,7 @@ class DataDict(dict):
         """
         Flatten nested structures into a single-level dictionary.
 
-        Parameters:
+        Args:
             separator (str):
                 String separator for nested keys (default: ".").
             parent_key (str):
@@ -438,7 +415,7 @@ class DataDict(dict):
                 Whether to expand list items using [index] notation (e.g., "users[0]").
 
         Returns:
-            (dict[str, Any]):
+            dict[str, Any]:
                 A new flat dictionary with dot-notation keys.
         """
         result = {}
@@ -471,7 +448,7 @@ class DataDict(dict):
         """
         Recursively merge another mapping into this DataDict.
 
-        Parameters:
+        Args:
             other (Mapping[str, Any]):
                 The source mapping to merge into the current instance.
         """
@@ -487,7 +464,7 @@ class DataDict(dict):
         Recursively freeze the DataDict and all nested DataDicts to prevent modifications.
 
         Returns:
-            (DataDict):
+            DataDict:
                 The current instance (self) after being frozen.
         """
         if self._frozen:
@@ -500,18 +477,49 @@ class DataDict(dict):
         return self
 
 
+def sanitize(obj: Any) -> Any:
+    """
+    Recursively convert types that are not TOML-compatible into compatible equivalents.
+
+    Current conversions:
+    - pathlib.Path -> str
+    - set -> list
+    - tuple -> list
+    - dict -> recursively sanitized dict
+    - list -> recursively sanitized list
+
+    Args:
+        obj (Any):
+            Object to sanitize
+
+    Returns:
+        Any:
+            Sanitized object
+    """
+    if isinstance(obj, Path):
+        return str(obj)
+
+    if isinstance(obj, dict):
+        return {k: sanitize(v) for k, v in obj.items()}
+
+    if isinstance(obj, list | tuple | set):
+        return [sanitize(v) for v in obj]
+
+    return obj
+
+
 def loads(toml: str, *, none_value: str | None = None) -> dict[str, Any]:
     """
     Parse TOML content from a string.
 
-    Parameters:
+    Args:
         toml (str):
             TOML-formatted string
         none_value (str | None):
             String value to be interpreted as None (e.g. none_value="null" maps TOML "null" to `None`)
 
     Returns:
-        (dict[str, Any]):
+        dict[str, Any]:
             Parsed TOML data as a dictionary
     """
     return rtoml.loads(toml, none_value=none_value)
@@ -527,7 +535,7 @@ def load(toml: str | Path | TextIO | BinaryIO, *, none_value: str | None = None,
         - Binary stream
         - Raw TOML string
 
-    Parameters:
+    Args:
         toml (str | Path | TextIO | BinaryIO):
             TOML source
         none_value (str | None):
@@ -536,7 +544,7 @@ def load(toml: str | Path | TextIO | BinaryIO, *, none_value: str | None = None,
             Text encoding used for file or binary input
 
     Returns:
-        (dict[str, Any]):
+        dict[str, Any]:
             Parsed TOML data as a dictionary
     """
     if isinstance(toml, Path):
@@ -555,24 +563,31 @@ def load(toml: str | Path | TextIO | BinaryIO, *, none_value: str | None = None,
     return loads(toml, none_value=none_value)
 
 
-def dumps(obj: Any, *, pretty: bool = False, none_value: str | None = "null") -> str:
+def dumps(obj: Any, *, pretty: bool = False, none_value: str | None = "null", sanitize: bool = True) -> str:
     """
     Serialize a Python object to a TOML string.
 
-    Parameters:
+    Args:
         obj (Any):
             Python object to serialize
         pretty (bool):
             Enable pretty-printed output
         none_value (str | None):
             String representation for None values (e.g. none_value="null" serializes `None` as "null")
+        sanitize (bool):
+            Convert types that are not strictly TOML-compatible (default: True)
 
     Returns:
-        (str):
+        str:
             TOML-formatted string
     """
     if type(obj) is DataDict:
         obj = obj.to_dict()
+
+    # Sanitize object to handle non-serializable types like Path
+    if sanitize:
+        obj = globals()["sanitize"](obj)
+
     return rtoml.dumps(obj, pretty=pretty, none_value=none_value)
 
 
@@ -583,11 +598,12 @@ def dump(
     pretty: bool = False,
     none_value: str | None = "null",
     encoding: str = "utf-8",
+    sanitize: bool = False,
 ) -> int:
     """
     Serialize a Python object and write it to a file or stream.
 
-    Parameters:
+    Args:
         obj (Any):
             Python object to serialize
         file (Path | TextIO | BinaryIO):
@@ -598,12 +614,14 @@ def dump(
             String representation for None values (e.g. none_value="null" serializes `None` as "null")
         encoding (str):
             Text encoding used for file or binary output
+        sanitize (bool):
+            Convert types that are not strictly TOML-compatible (default: True)
 
     Returns:
-        (int):
+        int:
             Number of characters or bytes written
     """
-    s = dumps(obj, pretty=pretty, none_value=none_value)
+    s = dumps(obj, pretty=pretty, none_value=none_value, sanitize=sanitize)
 
     # path
     if isinstance(file, Path):

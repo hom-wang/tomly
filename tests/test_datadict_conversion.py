@@ -13,15 +13,8 @@ from tomly import DataDict
 
 
 def test_simple_conversion():
-    """
-    Test converting simple DataDict to regular dict.
-    """
-    dd = DataDict(
-        {
-            "a": 1,
-            "b": 2,
-        }
-    )
+    """Test converting simple DataDict to regular dict."""
+    dd = DataDict({"a": 1, "b": 2})
     result = dd.to_dict()
 
     assert isinstance(result, dict)
@@ -30,18 +23,8 @@ def test_simple_conversion():
 
 
 def test_nested_conversion():
-    """
-    Test that nested DataDicts are also converted.
-    """
-    dd = DataDict(
-        {
-            "a": {
-                "b": {
-                    "c": 1,
-                }
-            }
-        }
-    )
+    """Test that nested DataDicts are also converted."""
+    dd = DataDict({"a": {"b": {"c": 1}}})
     result = dd.to_dict()
 
     assert isinstance(result, dict)
@@ -52,20 +35,12 @@ def test_nested_conversion():
 
 
 def test_list_with_datadicts_conversion():
-    """
-    Test converting lists containing DataDicts.
-    """
+    """Test converting lists containing DataDicts."""
     dd = DataDict(
         {
             "items": [
-                {
-                    "id": 1,
-                    "name": "first",
-                },
-                {
-                    "id": 2,
-                    "name": "second",
-                },
+                {"id": 1, "name": "first"},
+                {"id": 2, "name": "second"},
             ]
         }
     )
@@ -78,9 +53,7 @@ def test_list_with_datadicts_conversion():
 
 
 def test_empty_datadict_conversion():
-    """
-    Test converting empty DataDict.
-    """
+    """Test converting empty DataDict."""
     dd = DataDict()
     result = dd.to_dict()
     assert result == {}
@@ -88,9 +61,7 @@ def test_empty_datadict_conversion():
 
 
 def test_mixed_types_preservation():
-    """
-    Test that non-dict types are preserved during conversion.
-    """
+    """Test that non-dict types are preserved during conversion."""
     dd = DataDict(
         {
             "int": 42,
@@ -114,24 +85,8 @@ def test_mixed_types_preservation():
 
 
 def test_deeply_nested_conversion():
-    """
-    Test conversion of deeply nested structures.
-    """
-    dd = DataDict(
-        {
-            "l1": {
-                "l2": {
-                    "l3": {
-                        "l4": {
-                            "l5": {
-                                "value": "deep",
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    )
+    """Test conversion of deeply nested structures."""
+    dd = DataDict({"l1": {"l2": {"l3": {"l4": {"l5": {"value": "deep"}}}}}})
     result = dd.to_dict()
 
     current = result
@@ -143,16 +98,8 @@ def test_deeply_nested_conversion():
 
 
 def test_conversion_creates_new_dict():
-    """
-    Test that to_dict() creates a new dict, not a reference.
-    """
-    dd = DataDict(
-        {
-            "a": {
-                "b": 1,
-            }
-        }
-    )
+    """Test that to_dict() creates a new dict, not a reference."""
+    dd = DataDict({"a": {"b": 1}})
     result = dd.to_dict()
 
     # Modifying result should not affect original
@@ -166,18 +113,8 @@ def test_conversion_creates_new_dict():
 
 
 def test_simple_flatten():
-    """
-    Test flattening a simple nested structure.
-    """
-    dd = DataDict(
-        {
-            "a": {
-                "b": {
-                    "c": 1,
-                }
-            }
-        }
-    )
+    """Test flattening a simple nested structure."""
+    dd = DataDict({"a": {"b": {"c": 1}}})
     flat = dd.flatten()
     assert flat == {
         "a.b.c": 1,
@@ -185,19 +122,11 @@ def test_simple_flatten():
 
 
 def test_flatten_multiple_branches():
-    """
-    Test flattening structure with multiple branches.
-    """
+    """Test flattening structure with multiple branches."""
     dd = DataDict(
         {
-            "server": {
-                "host": "localhost",
-                "port": 8080,
-            },
-            "database": {
-                "host": "dbhost",
-                "port": 5432,
-            },
+            "server": {"host": "localhost", "port": 8080},
+            "database": {"host": "dbhost", "port": 5432},
         }
     )
     flat = dd.flatten()
@@ -210,18 +139,8 @@ def test_flatten_multiple_branches():
 
 
 def test_flatten_custom_separator():
-    """
-    Test flatten with custom separator.
-    """
-    dd = DataDict(
-        {
-            "a": {
-                "b": {
-                    "c": 1,
-                }
-            }
-        }
-    )
+    """Test flatten with custom separator."""
+    dd = DataDict({"a": {"b": {"c": 1}}})
     flat = dd.flatten(separator="__")
     assert flat == {
         "a__b__c": 1,
@@ -229,16 +148,8 @@ def test_flatten_custom_separator():
 
 
 def test_flatten_with_parent_key():
-    """
-    Test flatten with parent key prefix.
-    """
-    dd = DataDict(
-        {
-            "a": {
-                "b": 1,
-            }
-        }
-    )
+    """Test flatten with parent key prefix."""
+    dd = DataDict({"a": {"b": 1}})
     flat = dd.flatten(parent_key="root")
     assert flat == {
         "root.a.b": 1,
@@ -246,32 +157,22 @@ def test_flatten_with_parent_key():
 
 
 def test_flatten_empty_datadict():
-    """
-    Test flattening empty DataDict.
-    """
+    """Test flattening empty DataDict."""
     dd = DataDict()
     flat = dd.flatten()
     assert flat == {}
 
 
 def test_flatten_single_level():
-    """
-    Test flattening single-level structure.
-    """
+    """Test flattening single-level structure."""
     dd = DataDict({"a": 1, "b": 2, "c": 3})
     flat = dd.flatten()
     assert flat == {"a": 1, "b": 2, "c": 3}
 
 
 def test_flatten_without_list_expansion():
-    """
-    Test flatten with lists not expanded (default).
-    """
-    dd = DataDict(
-        {
-            "items": [1, 2, 3],
-        }
-    )
+    """Test flatten with lists not expanded (default)."""
+    dd = DataDict({"items": [1, 2, 3]})
     flat = dd.flatten(expand_lists=False)
     assert flat == {
         "items": [1, 2, 3],
@@ -279,14 +180,8 @@ def test_flatten_without_list_expansion():
 
 
 def test_flatten_with_list_expansion():
-    """
-    Test flatten with list expansion enabled.
-    """
-    dd = DataDict(
-        {
-            "items": [1, 2, 3],
-        }
-    )
+    """Test flatten with list expansion enabled."""
+    dd = DataDict({"items": [1, 2, 3]})
     flat = dd.flatten(
         expand_lists=True,
     )
@@ -298,20 +193,12 @@ def test_flatten_with_list_expansion():
 
 
 def test_flatten_nested_lists():
-    """
-    Test flatten with nested lists.
-    """
+    """Test flatten with nested lists."""
     dd = DataDict(
         {
             "users": [
-                {
-                    "name": "Alice",
-                    "age": 30,
-                },
-                {
-                    "name": "Bob",
-                    "age": 25,
-                },
+                {"name": "Alice", "age": 30},
+                {"name": "Bob", "age": 25},
             ]
         }
     )
@@ -325,9 +212,7 @@ def test_flatten_nested_lists():
 
 
 def test_flatten_list_of_lists():
-    """
-    Test flatten with list of lists.
-    """
+    """Test flatten with list of lists."""
     dd = DataDict({"matrix": [[1, 2], [3, 4]]})
     flat = dd.flatten(expand_lists=True)
     assert flat == {
@@ -339,9 +224,7 @@ def test_flatten_list_of_lists():
 
 
 def test_flatten_empty_list():
-    """
-    Test flatten with empty list.
-    """
+    """Test flatten with empty list."""
     dd = DataDict(
         {
             "empty": [],
@@ -356,21 +239,13 @@ def test_flatten_empty_list():
 
 
 def test_flatten_mixed_nesting():
-    """
-    Test flatten with mixed dict and list nesting.
-    """
+    """Test flatten with mixed dict and list nesting."""
     dd = DataDict(
         {
             "config": {
                 "servers": [
-                    {
-                        "host": "server1",
-                        "port": 8001,
-                    },
-                    {
-                        "host": "server2",
-                        "port": 8002,
-                    },
+                    {"host": "server1", "port": 8001},
+                    {"host": "server2", "port": 8002},
                 ],
                 "timeout": 30,
             }
@@ -387,24 +262,8 @@ def test_flatten_mixed_nesting():
 
 
 def test_flatten_deeply_nested():
-    """
-    Test flatten with very deep nesting.
-    """
-    dd = DataDict(
-        {
-            "l1": {
-                "l2": {
-                    "l3": {
-                        "l4": {
-                            "l5": {
-                                "value": "deep",
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    )
+    """Test flatten with very deep nesting."""
+    dd = DataDict({"l1": {"l2": {"l3": {"l4": {"l5": {"value": "deep"}}}}}})
     flat = dd.flatten()
     assert flat == {
         "l1.l2.l3.l4.l5.value": "deep",
@@ -412,9 +271,7 @@ def test_flatten_deeply_nested():
 
 
 def test_flatten_preserves_value_types():
-    """
-    Test that flatten preserves value types.
-    """
+    """Test that flatten preserves value types."""
     dd = DataDict(
         {
             "int": 42,
@@ -438,9 +295,7 @@ def test_flatten_preserves_value_types():
 
 
 def test_simple_merge():
-    """
-    Test merging a simple dict.
-    """
+    """Test merging a simple dict."""
     dd = DataDict({"a": 1, "b": 2})
     dd.merge({"c": 3})
     assert dd.a == 1
@@ -449,9 +304,7 @@ def test_simple_merge():
 
 
 def test_merge_overwrites_scalars():
-    """
-    Test that merge overwrites scalar values.
-    """
+    """Test that merge overwrites scalar values."""
     dd = DataDict({"a": 1, "b": 2})
     dd.merge({"a": 10})
     assert dd.a == 10
@@ -459,9 +312,7 @@ def test_merge_overwrites_scalars():
 
 
 def test_merge_nested_dicts():
-    """
-    Test that merge recursively merges nested dicts.
-    """
+    """Test that merge recursively merges nested dicts."""
     dd = DataDict({"a": {"b": 1, "c": 2}})
     dd.merge({"a": {"b": 10, "d": 4}})
     assert dd.a.b == 10  # Overwritten
@@ -470,9 +321,7 @@ def test_merge_nested_dicts():
 
 
 def test_merge_adds_new_keys():
-    """
-    Test that merge adds new keys.
-    """
+    """Test that merge adds new keys."""
     dd = DataDict({"a": 1})
     dd.merge({"b": 2, "c": 3})
     assert dd.a == 1
@@ -481,18 +330,14 @@ def test_merge_adds_new_keys():
 
 
 def test_merge_empty_dict():
-    """
-    Test merging empty dict (no-op).
-    """
+    """Test merging empty dict (no-op)."""
     dd = DataDict({"a": 1})
     dd.merge({})
     assert dd == {"a": 1}
 
 
 def test_merge_into_empty_dict():
-    """
-    Test merging into empty DataDict.
-    """
+    """Test merging into empty DataDict."""
     dd = DataDict()
     dd.merge({"a": 1, "b": 2})
     assert dd.a == 1
@@ -500,9 +345,7 @@ def test_merge_into_empty_dict():
 
 
 def test_merge_deeply_nested():
-    """
-    Test merge with deeply nested structures.
-    """
+    """Test merge with deeply nested structures."""
     dd = DataDict({"level1": {"level2": {"existing": "old", "keep": "this"}}})
     dd.merge({"level1": {"level2": {"existing": "new", "added": "value"}}})
     assert dd.level1.level2.existing == "new"
@@ -511,9 +354,7 @@ def test_merge_deeply_nested():
 
 
 def test_merge_wraps_dicts():
-    """
-    Test that merge wraps dict values into DataDict.
-    """
+    """Test that merge wraps dict values into DataDict."""
     dd = DataDict({"a": 1})
     dd.merge({"b": {"c": 2}})
     assert isinstance(dd.b, DataDict)
@@ -521,9 +362,7 @@ def test_merge_wraps_dicts():
 
 
 def test_merge_non_dict_to_dict():
-    """
-    Test merging dict over non-dict value.
-    """
+    """Test merging dict over non-dict value."""
     dd = DataDict({"a": 123})
     dd.merge({"a": {"b": 1}})
     assert isinstance(dd.a, DataDict)
@@ -531,18 +370,14 @@ def test_merge_non_dict_to_dict():
 
 
 def test_merge_dict_to_non_dict():
-    """
-    Test merging non-dict over dict value.
-    """
+    """Test merging non-dict over dict value."""
     dd = DataDict({"a": {"b": 1}})
     dd.merge({"a": 123})
     assert dd.a == 123
 
 
 def test_merge_multiple_times():
-    """
-    Test successive merges.
-    """
+    """Test successive merges."""
     dd = DataDict({"a": 1})
     dd.merge({"b": 2})
     dd.merge({"c": 3})
@@ -554,27 +389,21 @@ def test_merge_multiple_times():
 
 
 def test_merge_with_none_values():
-    """
-    Test merge with None values.
-    """
+    """Test merge with None values."""
     dd = DataDict({"a": {"b": 1}})
     dd.merge({"a": None})
     assert dd.a is None
 
 
 def test_merge_on_frozen_raises_error():
-    """
-    Test that merge on frozen DataDict raises error.
-    """
+    """Test that merge on frozen DataDict raises error."""
     dd = DataDict({"a": 1}).freeze()
     with pytest.raises(TypeError, match="frozen"):
         dd.merge({"b": 2})
 
 
 def test_merge_from_datadict():
-    """
-    Test merging from another DataDict.
-    """
+    """Test merging from another DataDict."""
     dd1 = DataDict({"a": 1, "b": 2})
     dd2 = DataDict({"b": 20, "c": 3})
     dd1.merge(dd2)
@@ -585,16 +414,11 @@ def test_merge_from_datadict():
 
 
 def test_merge_complex_structure():
-    """
-    Test merge with complex nested structure.
-    """
+    """Test merge with complex nested structure."""
     dd = DataDict(
         {
             "database": {
-                "primary": {
-                    "host": "localhost",
-                    "port": 5432,
-                },
+                "primary": {"host": "localhost", "port": 5432},
                 "replicas": [],
             },
             "cache": {
@@ -605,17 +429,9 @@ def test_merge_complex_structure():
     dd.merge(
         {
             "database": {
-                "primary": {
-                    "port": 5433,
-                },
-                "replicas": [
-                    {
-                        "host": "replica1",
-                    }
-                ],
-                "backup": {
-                    "host": "backup",
-                },
+                "primary": {"port": 5433},
+                "replicas": [{"host": "replica1"}],
+                "backup": {"host": "backup"},
             },
             "logging": {
                 "level": "INFO",

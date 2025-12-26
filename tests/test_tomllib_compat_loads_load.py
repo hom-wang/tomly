@@ -187,18 +187,14 @@ TOML_CASES: list[tuple[str, str]] = [
 
 @pytest.mark.parametrize("name,toml_text", TOML_CASES)
 def test_loads_str_fully_compatible(name: str, toml_text: str):
-    """
-    tomly.loads(str) must match tomllib.loads(str) exactly (values + types).
-    """
+    """tomly.loads(str) must match tomllib.loads(str) exactly (values + types)."""
     a = parse_with_tomllib_loads(toml_text)
     b = parse_with_tomly_loads(toml_text)
     assert_same_structure(a, b)
 
 
 def test_loads_empty_string():
-    """
-    Empty TOML should parse to {} consistently.
-    """
+    """Empty TOML should parse to {} consistently."""
     a = tomllib.loads("")
     b = tomly.loads("")
     assert_same_structure(a, b)
@@ -212,9 +208,7 @@ def test_loads_empty_string():
 
 @pytest.mark.parametrize("name,toml_text", TOML_CASES)
 def test_load_binary_fully_compatible(name: str, toml_text: str):
-    """
-    tomly.load(binary_io) must match tomllib.load(binary_io) exactly.
-    """
+    """tomly.load(binary_io) must match tomllib.load(binary_io) exactly."""
     a = parse_with_tomllib_load_binary(toml_text)
     b = parse_with_tomly_load_binary(toml_text)
     assert_same_structure(a, b)
@@ -228,9 +222,7 @@ def test_load_binary_fully_compatible(name: str, toml_text: str):
 
 @pytest.mark.parametrize("name,toml_text", TOML_CASES)
 def test_tomllib_loads_equals_load_binary(name: str, toml_text: str):
-    """
-    tomllib should be self-consistent; if not, the test case is suspicious.
-    """
+    """tomllib should be self-consistent; if not, the test case is suspicious."""
     a = parse_with_tomllib_loads(toml_text)
     b = parse_with_tomllib_load_binary(toml_text)
     assert_same_structure(a, b)
@@ -284,9 +276,7 @@ INVALID_TOML_CASES: list[tuple[str, str]] = [
 
 @pytest.mark.parametrize("name,toml_text", INVALID_TOML_CASES)
 def test_invalid_toml_must_raise_in_both(name: str, toml_text: str):
-    """
-    For invalid TOML, both tomllib and tomly must raise an exception.
-    """
+    """For invalid TOML, both tomllib and tomly must raise an exception."""
     with pytest.raises(Exception):
         tomllib.loads(toml_text)
 

@@ -11,93 +11,62 @@ from tomly import DataDict
 
 
 def test_interpolation_disabled_by_default(monkeypatch):
-    """
-    Test that interpolation is disabled by default.
-    """
+    """Test that interpolation is disabled by default."""
     monkeypatch.setenv("TEST_VAR", "value")
-    dd = DataDict(
-        {
-            "key": "${TEST_VAR}",
-        }
-    )
+    dd = DataDict({"key": "${TEST_VAR}"})
     assert dd.key == "${TEST_VAR}"  # Should not interpolate
 
 
 def test_basic_env_var_expansion(monkeypatch):
-    """
-    Test basic environment variable expansion.
-    """
+    """Test basic environment variable expansion."""
     monkeypatch.setenv("DB_HOST", "localhost")
-    dd = DataDict(
-        {
-            "host": "${DB_HOST}",
-        },
-        interpolate_env=True,
-    )
+    dd = DataDict({"host": "${DB_HOST}"}, interpolate_env=True)
     assert dd.host == "localhost"
 
 
 def test_env_var_with_default_value(monkeypatch):
-    """
-    Test environment variable with default value syntax.
-    """
+    """Test environment variable with default value syntax."""
     monkeypatch.delenv("MISSING_VAR", raising=False)
     dd = DataDict(
-        {
-            "port": "${MISSING_VAR:8080}",
-        },
+        {"port": "${MISSING_VAR:8080}"},
         interpolate_env=True,
     )
     assert dd.port == "8080"
 
 
 def test_env_var_without_default_preserved(monkeypatch):
-    """
-    Test that missing env vars without defaults are preserved.
-    """
+    """Test that missing env vars without defaults are preserved."""
     monkeypatch.delenv("MISSING_VAR", raising=False)
     dd = DataDict(
-        {
-            "key": "${MISSING_VAR}",
-        },
+        {"key": "${MISSING_VAR}"},
         interpolate_env=True,
     )
     assert dd.key == "${MISSING_VAR}"
 
 
 def test_env_var_takes_precedence_over_default(monkeypatch):
-    """
-    Test that actual env var takes precedence over default.
-    """
+    """Test that actual env var takes precedence over default."""
     monkeypatch.setenv("MY_VAR", "actual")
     dd = DataDict(
-        {
-            "key": "${MY_VAR:default}",
-        },
+        {"key": "${MY_VAR:default}"},
         interpolate_env=True,
     )
     assert dd.key == "actual"
 
 
 def test_multiple_env_vars_in_string(monkeypatch):
-    """
-    Test multiple environment variables in one string.
-    """
+    """Test multiple environment variables in one string."""
     monkeypatch.setenv("HOST", "example.com")
     monkeypatch.setenv("PORT", "443")
     dd = DataDict(
-        {
-            "url": "https://${HOST}:${PORT}/api",
-        },
+        {"url": "https://${HOST}:${PORT}/api"},
         interpolate_env=True,
     )
     assert dd.url == "https://example.com:443/api"
 
 
 def test_nested_dict_interpolation(monkeypatch):
-    """
-    Test interpolation in nested dictionaries.
-    """
+    """Test interpolation in nested dictionaries."""
     monkeypatch.setenv("DB_HOST", "192.168.1.1")
     monkeypatch.setenv("DB_PORT", "5432")
 
@@ -118,9 +87,7 @@ def test_nested_dict_interpolation(monkeypatch):
 
 
 def test_list_interpolation(monkeypatch):
-    """
-    Test interpolation in list values.
-    """
+    """Test interpolation in list values."""
     monkeypatch.setenv("SERVER1", "host1.com")
     monkeypatch.setenv("SERVER2", "host2.com")
 
@@ -141,20 +108,14 @@ def test_list_interpolation(monkeypatch):
 
 
 def test_dict_in_list_interpolation(monkeypatch):
-    """
-    Test interpolation in dicts within lists.
-    """
+    """Test interpolation in dicts within lists."""
     monkeypatch.setenv("HOST1", "server1")
 
     dd = DataDict(
         {
             "configs": [
-                {
-                    "host": "${HOST1}",
-                },
-                {
-                    "host": "${HOST2:server2}",
-                },
+                {"host": "${HOST1}"},
+                {"host": "${HOST2:server2}"},
             ]
         },
         interpolate_env=True,
@@ -165,23 +126,17 @@ def test_dict_in_list_interpolation(monkeypatch):
 
 
 def test_empty_string_env_var(monkeypatch):
-    """
-    Test environment variable set to empty string.
-    """
+    """Test environment variable set to empty string."""
     monkeypatch.setenv("EMPTY_VAR", "")
     dd = DataDict(
-        {
-            "key": "${EMPTY_VAR:default}",
-        },
+        {"key": "${EMPTY_VAR:default}"},
         interpolate_env=True,
     )
     assert dd.key == ""  # Empty string is a valid value
 
 
 def test_special_characters_in_default(monkeypatch):
-    """
-    Test default values with special characters.
-    """
+    """Test default values with special characters."""
     dd = DataDict(
         {
             "path": "${MISSING:/usr/local/bin}",
@@ -197,17 +152,12 @@ def test_special_characters_in_default(monkeypatch):
 
 
 def test_case_sensitive_var_names(monkeypatch):
-    """
-    Test that variable names are case-sensitive.
-    """
+    """Test that variable names are case-sensitive."""
     monkeypatch.setenv("MyVar", "lowercase")
     monkeypatch.setenv("MYVAR", "uppercase")
 
     dd = DataDict(
-        {
-            "lower": "${MyVar}",
-            "upper": "${MYVAR}",
-        },
+        {"lower": "${MyVar}", "upper": "${MYVAR}"},
         interpolate_env=True,
     )
 
@@ -216,9 +166,7 @@ def test_case_sensitive_var_names(monkeypatch):
 
 
 def test_non_string_values_not_interpolated(monkeypatch):
-    """
-    Test that non-string values are not processed.
-    """
+    """Test that non-string values are not processed."""
     monkeypatch.setenv("NUM", "42")
 
     dd = DataDict(
@@ -240,9 +188,7 @@ def test_non_string_values_not_interpolated(monkeypatch):
 
 
 def test_dollar_sign_without_braces_not_interpolated(monkeypatch):
-    """
-    Test that $ without proper syntax is not interpolated.
-    """
+    """Test that $ without proper syntax is not interpolated."""
     monkeypatch.setenv("VAR", "value")
 
     dd = DataDict(
@@ -262,40 +208,28 @@ def test_dollar_sign_without_braces_not_interpolated(monkeypatch):
 
 
 def test_escaped_dollar_signs():
-    """
-    Test double dollar signs (escaped).
-    """
+    """Test double dollar signs (escaped)."""
     dd = DataDict(
-        {
-            "escaped": "$${NOT_A_VAR}",
-        },
+        {"escaped": "$${NOT_A_VAR}"},
         interpolate_env=True,
     )
     assert dd.escaped == "$${NOT_A_VAR}"
 
 
 def test_empty_var_name():
-    """
-    Test empty variable name in pattern.
-    """
+    """Test empty variable name in pattern."""
     dd = DataDict(
-        {
-            "key": "${}:default}",
-        },
+        {"key": "${}:default}"},
         interpolate_env=True,
     )
     assert dd.key == "${}:default}"
 
 
 def test_whitespace_in_var_name(monkeypatch):
-    """
-    Test that whitespace in var names is not matched.
-    """
+    """Test that whitespace in var names is not matched."""
     monkeypatch.setenv("VAR WITH SPACE", "value")
     dd = DataDict(
-        {
-            "key": "${VAR WITH SPACE}",
-        },
+        {"key": "${VAR WITH SPACE}"},
         interpolate_env=True,
     )
     # Should not match due to pattern restriction
@@ -303,9 +237,7 @@ def test_whitespace_in_var_name(monkeypatch):
 
 
 def test_numeric_var_names(monkeypatch):
-    """
-    Test environment variables with numbers.
-    """
+    """Test environment variables with numbers."""
     monkeypatch.setenv("VAR123", "value1")
     monkeypatch.setenv("123VAR", "value2")
 
@@ -322,23 +254,17 @@ def test_numeric_var_names(monkeypatch):
 
 
 def test_underscore_in_var_names(monkeypatch):
-    """
-    Test environment variables with underscores.
-    """
+    """Test environment variables with underscores."""
     monkeypatch.setenv("MY_VAR_NAME", "underscore_value")
     dd = DataDict(
-        {
-            "key": "${MY_VAR_NAME}",
-        },
+        {"key": "${MY_VAR_NAME}"},
         interpolate_env=True,
     )
     assert dd.key == "underscore_value"
 
 
 def test_complex_real_world_config(monkeypatch):
-    """
-    Test a realistic configuration scenario.
-    """
+    """Test a realistic configuration scenario."""
     monkeypatch.setenv("APP_ENV", "production")
     monkeypatch.setenv("DB_HOST", "db.example.com")
     monkeypatch.setenv("REDIS_PORT", "6379")
@@ -374,9 +300,7 @@ def test_complex_real_world_config(monkeypatch):
 
 
 def test_interpolation_performance_with_no_patterns():
-    """
-    Test that interpolation doesn't slow down strings without patterns.
-    """
+    """Test that interpolation doesn't slow down strings without patterns."""
     dd = DataDict(
         {
             "plain1": "no variables here",
