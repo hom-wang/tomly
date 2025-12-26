@@ -714,3 +714,16 @@ def test_sanitize_nested():
     data = {"a": [Path("p")]}
     res = tomly.sanitize(data)
     assert res["a"][0] == "p"
+
+
+def test_sanitize_leaf():
+    """Test sanitize on a simple leaf value."""
+    assert tomly.sanitize(42) == 42
+    assert tomly.sanitize("s") == "s"
+
+
+def test_dumps_with_sanitize_true():
+    """Test dumps with sanitize=True explicitly."""
+    data = {"path": Path("/test")}
+    toml_str = tomly.dumps(data, sanitize=True)
+    assert 'path = "/test"' in toml_str

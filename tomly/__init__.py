@@ -508,7 +508,11 @@ def sanitize(obj: Any) -> Any:
     return obj
 
 
-def loads(toml: str, *, none_value: str | None = None) -> dict[str, Any]:
+def loads(
+    toml: str,
+    *,
+    none_value: str | None = None,
+) -> dict[str, Any]:
     """
     Parse TOML content from a string.
 
@@ -525,7 +529,12 @@ def loads(toml: str, *, none_value: str | None = None) -> dict[str, Any]:
     return rtoml.loads(toml, none_value=none_value)
 
 
-def load(toml: str | Path | TextIO | BinaryIO, *, none_value: str | None = None, encoding: str = "utf-8") -> dict[str, Any]:
+def load(
+    toml: str | Path | TextIO | BinaryIO,
+    *,
+    none_value: str | None = None,
+    encoding: str = "utf-8",
+) -> dict[str, Any]:
     """
     Load and parse TOML content from various input sources.
 
@@ -563,7 +572,13 @@ def load(toml: str | Path | TextIO | BinaryIO, *, none_value: str | None = None,
     return loads(toml, none_value=none_value)
 
 
-def dumps(obj: Any, *, pretty: bool = False, none_value: str | None = "null", sanitize: bool = True) -> str:
+def dumps(
+    obj: Any,
+    *,
+    pretty: bool = False,
+    none_value: str | None = "null",
+    sanitize: bool = False,
+) -> str:
     """
     Serialize a Python object to a TOML string.
 
@@ -575,7 +590,7 @@ def dumps(obj: Any, *, pretty: bool = False, none_value: str | None = "null", sa
         none_value (str | None):
             String representation for None values (e.g. none_value="null" serializes `None` as "null")
         sanitize (bool):
-            Convert types that are not strictly TOML-compatible (default: True)
+            Convert types that are not strictly TOML-compatible (default: False)
 
     Returns:
         str:
@@ -615,7 +630,7 @@ def dump(
         encoding (str):
             Text encoding used for file or binary output
         sanitize (bool):
-            Convert types that are not strictly TOML-compatible (default: True)
+            Convert types that are not strictly TOML-compatible (default: False)
 
     Returns:
         int:
